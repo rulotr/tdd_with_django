@@ -1,8 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import redirect,render
 from django.http import HttpResponse
+from lists.models import Item
 
 # Create your views here.
 def home_page(request):
-	return render(request,'home.html',{ #item_Text es el name del input con el que se asocia
-		'new_item_text': request.POST.get('item_text',''),
-	}) # En lugar de usar HttpResponse, se usa render, necesita un request y la plantilla
+	if request.method == 'POST':
+		Item.objects.create(text = request.POST.get('item_text',''))
+		return redirect('/')
+
+	items = Item.objects.all()
+	return render(request,'home.html',{'items': items})
