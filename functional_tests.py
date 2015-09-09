@@ -13,16 +13,26 @@ class NewVisitorTest(unittest.TestCase):
 	def tearDown(self):
 		self.browser.quit()
 
+	#Es recomendable poner los mentodos de ayuda despues del tearDown
+	def buscar_una_fila_en_la_lista(self, row_text):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr') # find_element (si no es un solo elemento marca error) find_elements(varios)
+		self.assertIn(row_text,[row.text for row in rows])
+
 	def test_puede_comenzar_una_lista_y_recupearlar_despues(self):
 		#Edith ha escuchado acerca de una nueva aplicacion de tareas
 		#asi que ella visita la pagina
 		self.browser.get('http://localhost:8000')
-
+		#import time
+		#time.sleep(10)
 		#Ella revisa que el titulo y cabecero
-		self.assertIn('To-Do',self.browser.title) #Documentacion de los asserts https://docs.python.org/3/library/unittest.html
-		header_text = self.browser.find_element_by_tag_name('h1').text
-		self.assertIn('To-Do', header_text)
 
+		
+		self.assertIn('To-Do',self.browser.title) #Documentacion de los asserts https://docs.python.org/3/library/unittest.html
+		
+		header_text = self.browser.find_element_by_tag_name('h1').text
+		
+		self.assertIn('To-Do', header_text)
 		#la caja de texto debe tener una invitacion a ingresas una tarea
 		inputbox = self.browser.find_element_by_id('id_new_item')
 		self.assertEqual(
@@ -36,12 +46,18 @@ class NewVisitorTest(unittest.TestCase):
 		#Tecleamos enter para se agregue la tarea
 		inputbox.send_keys(Keys.ENTER)
 
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-				any(row.text == '1:Buy peacock feathers' for row in rows),
-				"New to-do item did not appear in table"
-		)
+		#Agregamos otra tarea que se llamara  "Use peacock feathers to make a fly"
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		#Digitamos en la caja de texto otra tarea
+		inputbox.send_keys('Use peacock feathers to make a fly')
+
+		#Tecleamos enter para se agregue la tarea
+		inputbox.send_keys(Keys.ENTER)		        
+
+		# Al actualizarse la pagina muestra las tareas ingresadas
+		self.buscar_una_fila_en_la_lista('1: Buy peacock feathers')
+		self.buscar_una_fila_en_la_lista('2: Use peacock feathers to make a fly')
+			
 
 
 		self.fail('Finish the test!') #Se usa para informar que el test termino
