@@ -29,7 +29,6 @@ class NewVisitorTest(LiveServerTestCase):
 		#import time
 		#time.sleep(10)
 		#Ella revisa que el titulo y cabecero
-
 		
 		self.assertIn('To-Do',self.browser.title) #Documentacion de los asserts https://docs.python.org/3/library/unittest.html
 		
@@ -43,7 +42,7 @@ class NewVisitorTest(LiveServerTestCase):
 				'Enter a to-do item'
 		)
 
-		#Digitamos en la caja de texto
+		# #Digitamos en la caja de texto
 		inputbox.send_keys('Buy peacock feathers')
 
 		#Tecleamos enter para se agregue la tarea
@@ -51,7 +50,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 		#Al enter, se actualizara la url
 		edit_list_url = self.browser.current_url		
-		#self.assertRegex(edit_list_url,'/lists/.+')
+		self.assertRegex(edit_list_url,'/lists/.+')
 		self.buscar_una_fila_en_la_lista('1: Buy peacock feathers')
 
 		#Agregamos otra tarea que se llamara  "Use peacock feathers to make a fly"
@@ -87,7 +86,7 @@ class NewVisitorTest(LiveServerTestCase):
 		self.assertNotEqual(francis_list_url,edit_list_url)
 		
 		#De nuevo que existan tareas de Edith en la lista de Francis
-		page_text = self.browser2.find_element_by_tag_name('body').text
+		page_text = self.browser.find_element_by_tag_name('body').text
 		self.assertNotIn('Buy peacock feathers', page_text)
 		self.assertIn('Buy milk',page_text)
 
