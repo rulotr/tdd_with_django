@@ -8,7 +8,7 @@ import unittest
 class NewVisitorTest(LiveServerTestCase):
 	#Se ejecuta antes de iniciar un test
 	def setUp(self):
-		self.browser = webdriver.Firefox()
+		self.browser = webdriver.Firefox()		
 		#self.browser.implicitly_wait(3) #Espera 3 segundos por si la pagina un no se ha cargado
 
 	#Se ejecuta al final del test no importando si hubo errores	
@@ -93,6 +93,20 @@ class NewVisitorTest(LiveServerTestCase):
 
 
 		self.fail('Finish the test!') #Se usa para informar que el test termino
+
+	def test_layout_and_styling(self):
+		# Edith visita la pagina principal
+		self.browser.get(self.live_server_url)
+		self.browser.set_window_size(1027,768)
+
+		# Ella nota que la caja de texto esta centrada
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('testing\n')
+		#self.assertAlmostEqual(
+				inputbox.location['x'] + inputbox.size['width'] /2,
+				512,
+				delta=5
+			)
 
 # Como estamos lanzando el test desde ./manage.py test functiona_tests ya no necitamos:
 #if __name__ == '__main__': #Si este script se ejecuta desde la linea de comandos y no se esta importando
