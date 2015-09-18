@@ -1,11 +1,12 @@
-from django.test import LiveServerTestCase 
+#from django.test import LiveServerTestCase 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from django.test import TestCase
 import unittest
 
 #Como es un caso de pruebas lo heredamos de unittest.TestCase
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 	#Se ejecuta antes de iniciar un test
 	def setUp(self):
 		self.browser = webdriver.Firefox()		
@@ -13,6 +14,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 	#Se ejecuta al final del test no importando si hubo errores	
 	def tearDown(self):
+		self.browser.refresh() #Es necesario en windows por un bug de django
 		self.browser.quit()
 
 	#Es recomendable poner los mentodos de ayuda despues del tearDown
@@ -66,7 +68,8 @@ class NewVisitorTest(LiveServerTestCase):
 		self.buscar_una_fila_en_la_lista('2: Use peacock feathers to make a fly')
 
 		## Nueva sesion del navegador para asegurarnos que no hay indormacion de Edith´s
-		self.browser.quit()
+		self.browser.refresh() #Es necesario en windows por un bug de django
+		self.browser.quit() 
 		self.browser = webdriver.Firefox()
 
 		#Francis visita la pagina principal, no esta firmada Edith
@@ -101,8 +104,8 @@ class NewVisitorTest(LiveServerTestCase):
 
 		# Ella nota que la caja de texto esta centrada
 		inputbox = self.browser.find_element_by_id('id_new_item')
-		inputbox.send_keys('testing\n')
-		#self.assertAlmostEqual(
+		#inputbox.send_keys('testing\n')
+		self.assertAlmostEqual(
 				inputbox.location['x'] + inputbox.size['width'] /2,
 				512,
 				delta=5
